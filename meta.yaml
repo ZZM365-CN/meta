@@ -1,0 +1,259 @@
+# 默认使用meta内核
+# 因shellclash只会抓取规则进行二次加工, 此规则只保留规则定义, 其他全靠shellclash定义自己生成
+# 如其他软件导入报错, 请自行补全, 参照此示例 https://docs.metacubex.one/example/ex1
+#---------------------------------------------------#
+#                  默认使用meta内核
+#              根据需求自行删减#屏蔽内容
+#         因shellclash只会抓取规则进行二次加工
+#  此规则只保留规则定义 其他全靠shellclas选项自动生成
+#      如导入其他软件报错 参照以下链接自行补全
+#   示例 https://docs.metacubex.one/example/ex1
+#---------------------------------------------------#
+
+# 机场订阅
+proxy-providers:
+  PrPr: 
+    type: http
+    url:  
+    interval: 86400
+    path: ./proxy_provider/PrPr.yaml 
+#    filter: '(港|HK|Hong Kong)' # 正则过滤后本组仅含HK节点
+    health-check:  # 健康检查选项从此处开始
+      enable: true # 是否自动进行latency-test
+      interval: 600  # ping节点时间间隔 
+      # lazy: true # 为true时，未被使用时不进行测ping
+      url: http://www.youtube.com/generate_204 # 用来测ping的地址
+      
+  Bocch: 
+    type: http
+    url:  
+    path: ./proxy_provider/Bocchi.yaml 
+    # filter: '(港|HK|Hong Kong)' 
+    health-check:  
+      enable: true 
+      interval: 3600  
+      url: http://www.youtube.com/generate_204
+
+
+# 代理组
+proxy-groups:
+# type:
+# select 手动选择，该组在节点列表上，手动选择列表或者 proxy-group 
+# url-test 延迟最低节点，测试该组所有节点的延迟
+# fallback 定期测试列表中服务器的可用性，按顺序切换使用第一个可用的服务器
+# load-balance 负载均衡，由该组2个以上的节点提供链接 
+
+  - name: "节点选择"
+    type: select
+    proxies:
+      - 全球直连
+    use:
+      - PrPr
+      - Bocchi
+
+  - name: "国外媒体"
+    type: select
+    proxies:
+      - 节点选择
+    
+  - name: "PayPal"
+    type: select
+    proxies:
+      - 全球直连
+      - 节点选择
+
+  - name: "苹果服务"
+    type: select
+    proxies:
+      - 全球直连
+      - 节点选择
+
+  - name: "微软服务"
+    type: select
+    proxies:
+      - 全球直连
+      - 节点选择
+    
+  - name: "DisneyPlus"
+    type: select
+    proxies:
+      - 节点选择
+    use:
+      - PrPr
+      - Bocchi
+      
+  - name: "BiliBili"
+    type: select
+    proxies:
+      - 全球直连
+      - 节点选择    
+    use:
+      - PrPr
+      - Bocchi
+      
+  - name: "Netflix"
+    type: select
+    proxies:
+      - 节点选择
+    use:
+      - PrPr
+      - Bocchi
+      
+  - name: "Steam"
+    type: select
+    proxies:
+      - 全球直连
+      - 节点选择    
+    
+  - name: "全球直连"
+    type: select
+    proxies:
+      - DIRECT
+    
+  - name: "漏网之鱼"
+    type: select
+    proxies:
+      - 节点选择
+
+# 规则地址
+  LocalAreaNetwork: # Provider 名称
+    type: http
+    behavior: classical # domain, ipcidr or classical (premium core only)
+    path: ./rule_provider/LocalAreaNetwork
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml
+    interval: 86400
+    
+  PayPal:
+    type: http
+    behavior: classical
+    path: ./rule_provider/PayPal
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.yaml
+    interval: 86400
+  
+  DisneyPlus:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Disney
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.yaml
+    interval: 86400
+
+  BiliBili:
+    type: http
+    behavior: classical
+    path: ./rule_provider/BiliBili
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml
+    interval: 86400
+
+  Netflix:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Netflix
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml
+    interval: 86400
+
+  Microsoft:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Microsoft
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml
+    interval: 86400
+    
+  Apple:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Apple
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml
+    interval: 86400
+    
+  GlobalMedia:
+    type: http
+    behavior: classical
+    path: ./rule_provider/GlobalMedia
+    url: https://gh-proxy.com/https://github.com/ACL4SSR/ACL4SSR/blob/master/Clash/Providers/ProxyMedia.yaml
+    interval: 86400
+
+  SteamCN:
+    type: http
+    behavior: classical
+    path: ./rule_provider/SteamCN
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/SteamCN/SteamCN.yaml
+    interval: 86400
+
+  Download:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Download
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Download/Download.yaml
+    interval: 86400
+    
+  Steam:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Steam
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Steam/Steam.yaml
+    interval: 86400
+    
+  Proxy:
+    type: http
+    behavior: classical
+    path: ./rule_provider/Proxy
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Proxy/Proxy.yaml
+    interval: 86400
+    
+  ChinaIPs_IP:
+    type: http
+    behavior: classical
+    path: ./rule_provider/ChinaIPs_IP
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml
+    interval: 86400
+
+  ChinaMedia:
+    type: http
+    behavior: classical
+    path: ./rule_provider/ChinaMedia
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.yaml
+    interval: 86400
+
+  China_Domain:
+    type: http
+    behavior: classical
+    path: ./rule_provider/China_Domain
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China_Domain.yaml
+    interval: 86400
+    
+  China:
+    type: http
+    behavior: classical
+    path: ./rule_provider/China
+    url: https://gh-proxy.com/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml
+    interval: 86400
+
+
+# 规则
+rules:
+# 这些是自定义规则，想要的可以继续加
+  - DOMAIN-SUFFIX,tongji.baidu.com,DIRECT
+  - DOMAIN-SUFFIX,click.simba.taobao.com,DIRECT
+#  - DOMAIN-SUFFIX,freenom.com,节点选择
+#  - DOMAIN-SUFFIX,line.games,游戏服务
+#  - DOMAIN-SUFFIX,gameguard.co.kr,游戏服务
+# 下面的规则是通过上面的rule-provider来确定的
+  - RULE-SET,PayPal,PayPal
+  - RULE-SET,Microsoft,微软服务
+  - RULE-SET,Apple,苹果服务
+  - RULE-SET,GlobalMedia,国外媒体
+  - RULE-SET,Steam,Steam
+  - RULE-SET,DisneyPlus,DisneyPlus
+  - RULE-SET,BiliBili,BiliBili
+  - RULE-SET,Netflix,Netflix
+  - RULE-SET,ChinaIPs_IP,全球直连
+  - RULE-SET,ChinaMedia,全球直连
+  - RULE-SET,SteamCN,全球直连
+  - RULE-SET,LocalAreaNetwork,全球直连
+  - RULE-SET,Download,全球直连
+  - RULE-SET,China_Domain,全球直连
+  - RULE-SET,China,全球直连
+  - RULE-SET,Proxy,节点选择
+  - GEOIP,CN,全球直连
+  #- GEOSITE,CN,DIRECT #Meta内核专属
+  - MATCH,漏网之鱼
